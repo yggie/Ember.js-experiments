@@ -58,18 +58,19 @@ li {
   padding-right: 20px;
 }
 
-#contact-list a {
-  -webkit-transition: margin-left 100ms ease-out 0ms;
-  -moz-transition: margin-left 100ms ease-out 0ms;
-  -o-transition: margin-left 100ms ease-out 0ms;
-  transition: margin-left 100ms ease-out 0ms;
+.active, .active:hover, .active:visited, .active:active, .active:hover {
+  color: #555;
 }
 
-#contact-list a:hover {
-  margin-left: 5px;
+#app-footer {
+  padding: 15px;
 }
 
-.active {
-  font-size: 120%;
+#app-header {
+  padding: 15px;
+}
+
+#logo {
+  font-size: 1.6em;
 }
 

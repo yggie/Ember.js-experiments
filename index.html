@@ -23,14 +23,15 @@
   <script type="text/x-handlebars">
     <div id="wrapper">
       <div id="main">
-        <header>
-          {{#link-to 'contacts'}}ActiveAddress{{/link-to}}
+        <header id="app-header">
+          {{#link-to 'contacts' id="logo"}}ActiveAddress{{/link-to}}
         </header>
         {{outlet}}
       </div>
     </div>
     <footer id="app-footer">
       <ul>
+        <li>Created by Bryan Yap</li>
         <li>Powered by <a href="http://emberjs.com/" target="_blank">Ember.js</a></li>
         <li>Fork me on <a href="https://github.com/yggie/Ember.js-experiments" target="_blank">GitHub</a></li>
       </ul>
@@ -41,12 +42,12 @@
     <section id="content" class="container">
       <ul id="contact-list" class="col-sm-2">
         <li><h4>List of Contacts</h4></li>
-        <li>{{#link-to 'contacts.new'}}new contact{{/link-to}}</li>
-        {{#each}}
+        {{#each controller}}
           <li>
             {{#link-to 'contact' this}}{{ this.display_name}}{{/link-to}}
           </li>
         {{/each}}
+        <li>{{#link-to 'contacts.new' class="btn btn-default btn-xs"}}Add New Contact{{/link-to}}</li>
       </ul>
       <section id="contact-display" class="col-sm-10">
         {{ outlet }}
@@ -62,7 +63,11 @@
 
   <script type="text/x-handlebars" data-template-name="contacts/index">
     <h1>ActiveAddress</h1>
-    <p class="lead">The best address book there is</p>
+    <p class="lead">An address book for the active</p>
+    <blockquote>
+      <p>An address book like no other</p>
+      <footer>Anonymous</footer>
+    </blockquote>
   </script>
 
   <script type="text/x-handlebars" data-template-name="contact">
@@ -71,7 +76,7 @@
       {{partial 'contact/form' }}
     {{else}}
       {{partial 'contact/show' }}
-      <button class="btn btn-default" {{action 'edit'}}>edit</button>
+      <button class="btn btn-default" {{action 'edit'}}>Edit</button>
       <button class="btn btn-default btn-danger" {{action 'delete'}}>Delete</button>
     {{/if}}
   </script>

@@ -97,6 +97,11 @@ ActiveAddress.ContactRoute = Ember.Route.extend({
 });
 
 // controllers
+ActiveAddress.ContactsController = Ember.ArrayController.extend({
+  sortProperties: [ 'display_name' ],
+  sortAscending: true
+});
+
 ActiveAddress.ContactsNewController = Ember.ArrayController.extend({
   contactFormButtonText: 'Add Contact',
   errors: {},
@@ -163,8 +168,11 @@ ActiveAddress.ContactController = Ember.ObjectController.extend({
     },
 
     delete: function() {
-      this.get('model').deleteRecord();
-      this.transitionToRoute('contacts');
+      var record = this.get('model');
+      if (confirm('Do you really want to remove ' + record.get('display_name') + ' from the contacts list?')) {
+        record.deleteRecord();
+        this.transitionToRoute('contacts');
+      }
     },
 
     cancelContactForm: function() {
@@ -185,6 +193,14 @@ ActiveAddress.ContactController = Ember.ObjectController.extend({
 ActiveAddress.ApplicationAdapter = DS.FixtureAdapter.extend();
 
 ActiveAddress.Contact.FIXTURES = [
+{
+  id: 4,
+  first_name: 'Affro',
+  surname: 'Kingsley',
+  address: 'Henry Adams, Rockford',
+  phone_number: '01234567890',
+  email: 'kings@rocky.org'
+},
 {
   id: 1,
   first_name: 'Frodo',
