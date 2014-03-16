@@ -38,21 +38,6 @@ function validateContact(proxy) {
   });
 }
 
-// handlebar helpers
-
-Ember.Handlebars.helper('begin-form-group', function(dummy, options) {
-  var errorClass = (options.error) ? ' has-error has-feedback' : '';
-  return new Handlebars.SafeString('<div class="form-group' + errorClass + '">');
-});
-
-Ember.Handlebars.helper('end-form-group', function(errorMsg) {
-  if (errorMsg) {
-    return new Handlebars.SafeString('<span class="help-block control-label">' + errorMsg + '</span></div>');
-  } else {
-    return new Handlebars.SafeString('</div>');
-  }
-});
-
 // models
 ActiveAddress.Contact = DS.Model.extend({
   first_name: DS.attr('string'),
