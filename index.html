@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Active-Address</title>
+
+  <link rel="stylesheet" href="public/libs/css/bootstrap.min.css">
+  <link rel="stylesheet" href="public/css/application.css">
+
+  <!--[if !IE 7]>
+    <style type="text/css">
+      #wrap {
+        display: table;
+        height: 100%
+      }
+    </style>
+  <![endif]-->
+</head>
+
+<body>
+  <script type="text/x-handlebars">
+    <div id="wrapper">
+      <div id="main">
+        <header>
+          {{#link-to 'contacts'}}ActiveAddress{{/link-to}}
+        </header>
+        {{outlet}}
+      </div>
+    </div>
+    <footer id="app-footer">
+      <ul>
+        <li>Powered by <a href="http://emberjs.com/" target="_blank">Ember.js</a></li>
+        <li>Fork me on <a href="https://github.com/yggie/Ember.js-experiments" target="_blank">GitHub</a></li>
+      </ul>
+    </footer>
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="contacts">
+    <section id="content" class="container">
+      <ul id="contact-list" class="col-sm-2">
+        <li><h4>List of Contacts</h4></li>
+        <li>{{#link-to 'contacts.new'}}new contact{{/link-to}}</li>
+        {{#each}}
+          <li>
+            {{#link-to 'contact' this}}{{ this.display_name}}{{/link-to}}
+          </li>
+        {{/each}}
+      </ul>
+      <section id="contact-display" class="col-sm-10">
+        {{ outlet }}
+      </section>
+    </section>
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="contacts/new">
+    <h1>Add a New Contact</h1>
+
+    {{partial 'contact/form'}}
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="contacts/index">
+    <h1>ActiveAddress</h1>
+    <p class="lead">The best address book there is</p>
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="contact">
+    <h1>{{ model.display_name }}</h1>
+    {{#if isEditing}}
+      {{partial 'contact/form' }}
+    {{else}}
+      {{partial 'contact/show' }}
+      <button {{action 'edit'}}>edit</button>
+    {{/if}}
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="contact/_form">
+    <div class="col-sm-6">
+      <div class="form-group">
+        {{input type="text" placeholder="First Name" value=first_name class="form-control"}}
+      </div>
+
+      <div class="form-group">
+        {{input type="text" placeholder="Surname" value=surname class="form-control"}}
+      </div>
+
+      <div class="form-group">
+        {{input type="text" placeholder="Address" value=address class="form-control"}}
+      </div>
+
+      <div class="form-group">
+        {{input type="text" placeholder="Phone Number" value=phone_number class="form-control"}}
+      </div>
+
+      <div class="form-group">
+        {{input type="text" placeholder="Email" value=email class="form-control"}}
+      </div>
+
+      <button {{action submitContactForm}}>{{ controller.contactFormButtonText }}</button>
+      <button {{action cancelContactForm}}>Cancel</button>
+    </div>
+  </script>
+
+  <script type="text/x-handlebars" data-template-name="contact/_show">
+    <address>
+      <strong>{{ model.display_name }}</strong><br/>
+      {{ model.display_address }}<br/>
+      <abbr title="Phone">P</abbr>: {{ model.phone_number }}<br/>
+      <abbr title="Email">E</abbr>: <a {{bind-attr href="model.mail_to"}}>{{ model.email }}</a>
+    </address>
+  </script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+  <script src="public/libs/js/handlebars-1.0.0.js"></script>
+  <script src="public/libs/js/ember.js"></script>
+  <script src="public/libs/js/ember-data.js"></script>
+  <script src="public/js/application.js"></script>
+</body>
+</html>
