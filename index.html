@@ -79,29 +79,34 @@
   <script type="text/x-handlebars" data-template-name="contact/_form">
     <div class="col-sm-6">
       <div {{bind-attr class=":form-group errors.first_name:has-error has-feedback"}}>
-        {{input type="text" placeholder="*First Name" value=first_name class="form-control"}}
+        <label for="contact_first_name">First Name:</label>
+        {{input id="contact_first_name" type="text" value=first_name class="form-control"}}
         {{#if errors.first_name}}
           <span class="help-block control-label">{{errors.first_name}}</span>
         {{/if}}
       </div>
 
       <div {{bind-attr class=":form-group errors.surname:has-error has-feedback"}}>
-        {{input type="text" placeholder="*Surname" value=surname class="form-control"}}
+        <label for="contact_surname">Surname:</label>
+        {{input id="contact_surname" type="text" value=surname class="form-control"}}
         {{#if errors.surname}}
           <span class="help-block control-label">{{errors.surname}}</span>
         {{/if}}
       </div>
 
       <div class="form-group">
-        {{input type="text" placeholder="Address" value=address class="form-control"}}
+        <label for="contact_address">Address:</label>
+        {{input id="contact_address" type="text" value=address class="form-control"}}
       </div>
 
       <div class="form-group">
-        {{input type="text" placeholder="Phone Number" value=phone_number class="form-control"}}
+        <label for="contact_phone_number">Phone Number:</label>
+        {{input id="contact_phone_number" type="text" value=phone_number class="form-control"}}
       </div>
 
       <div class="form-group">
-        {{input type="text" placeholder="Email" value=email class="form-control"}}
+        <label for="contact_email">Email:</label>
+        {{input id="contact_email" type="text" value=email class="form-control"}}
       </div>
 
       <button class="btn btn-default" {{action submitContactForm}}>{{ controller.contactFormButtonText }}</button>
