@@ -66,23 +66,30 @@
   </script>
 
   <script type="text/x-handlebars" data-template-name="contact">
-    <h1>{{ model.display_name }}</h1>
+    <h1>{{ display_name }}</h1>
     {{#if isEditing}}
       {{partial 'contact/form' }}
     {{else}}
       {{partial 'contact/show' }}
-      <button {{action 'edit'}}>edit</button>
+      <button class="btn btn-default" {{action 'edit'}}>edit</button>
+      <button class="btn btn-default btn-danger" {{action 'delete'}}>Delete</button>
     {{/if}}
   </script>
 
   <script type="text/x-handlebars" data-template-name="contact/_form">
     <div class="col-sm-6">
-      <div class="form-group">
-        {{input type="text" placeholder="First Name" value=first_name class="form-control"}}
+      <div {{bind-attr class=":form-group errors.first_name:has-error has-feedback"}}>
+        {{input type="text" placeholder="*First Name" value=first_name class="form-control"}}
+        {{#if errors.first_name}}
+          <span class="help-block control-label">{{errors.first_name}}</span>
+        {{/if}}
       </div>
 
-      <div class="form-group">
-        {{input type="text" placeholder="Surname" value=surname class="form-control"}}
+      <div {{bind-attr class=":form-group errors.surname:has-error has-feedback"}}>
+        {{input type="text" placeholder="*Surname" value=surname class="form-control"}}
+        {{#if errors.surname}}
+          <span class="help-block control-label">{{errors.surname}}</span>
+        {{/if}}
       </div>
 
       <div class="form-group">
@@ -97,8 +104,8 @@
         {{input type="text" placeholder="Email" value=email class="form-control"}}
       </div>
 
-      <button {{action submitContactForm}}>{{ controller.contactFormButtonText }}</button>
-      <button {{action cancelContactForm}}>Cancel</button>
+      <button class="btn btn-default" {{action submitContactForm}}>{{ controller.contactFormButtonText }}</button>
+      <button class="btn btn-default" {{action cancelContactForm}}>Cancel</button>
     </div>
   </script>
 

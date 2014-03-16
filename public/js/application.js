@@ -6,6 +6,53 @@ ActiveAddress.ApplicationView = Ember.View.extend({
   classNames: [ 'full-height' ]
 });
 
+function validateContact(proxy) {
+  var errors = {},
+      first_name = proxy.get('first_name'),
+      surname = proxy.get('surname'),
+      address = proxy.get('address'),
+      phone_number = proxy.get('phone_number'),
+      email = proxy.get('email');
+
+  if (!first_name || !first_name.trim()) {
+    errors.first_name = "First name cannot be empty";
+  }
+  if (!surname || !surname.trim()) {
+    errors.surname = "Surname cannot be empty";
+  }
+
+  return (function(e, attr) {
+    var hasE = (Object.keys(e).length > 0);
+
+    return {
+      errors: function() { return e; },
+      hasErrors: function() { return hasE; },
+      attributes: function() { return attr; }
+    }
+  })(errors, {
+    first_name: first_name,
+    surname: surname,
+    address: address,
+    phone_number: phone_number,
+    email: email
+  });
+}
+
+// handlebar helpers
+
+Ember.Handlebars.helper('begin-form-group', function(dummy, options) {
+  var errorClass = (options.error) ? ' has-error has-feedback' : '';
+  return new Handlebars.SafeString('<div class="form-group' + errorClass + '">');
+});
+
+Ember.Handlebars.helper('end-form-group', function(errorMsg) {
+  if (errorMsg) {
+    return new Handlebars.SafeString('<span class="help-block control-label">' + errorMsg + '</span></div>');
+  } else {
+    return new Handlebars.SafeString('</div>');
+  }
+});
+
 // models
 ActiveAddress.Contact = DS.Model.extend({
   first_name: DS.attr('string'),
@@ -38,6 +85,12 @@ ActiveAddress.Router.map(function() {
 ActiveAddress.ContactsRoute = Ember.Route.extend({
   model: function() {
     return this.store.find('contact');
+  },
+
+  actions: {
+    willTransition: function(transition) {
+      this.controllerFor('contacts.new').send('reset');
+    }
   }
 });
 
@@ -53,9 +106,7 @@ ActiveAddress.ContactRoute = Ember.Route.extend({
 
   actions: {
     willTransition: function(transition) {
-      if (this.controller.get('isEditing')) {
-        this.controller.get('model').rollback();
-      }
+      this.controllerFor('contact').send('reset');
     }
   },
 });
@@ -63,39 +114,42 @@ ActiveAddress.ContactRoute = Ember.Route.extend({
 // controllers
 ActiveAddress.ContactsNewController = Ember.ArrayController.extend({
   contactFormButtonText: 'Add Contact',
+  errors: {},
 
   actions: {
     submitContactForm: function() {
-      // check for the required fields
-      var first_name = this.get('first_name');
-      var surname = this.get('surname');
-      if (!first_name || !first_name.trim() ||
-          !surname || !surname.trim()) {
+      // run validation
+      var validation = validateContact(this);
+      
+      if (validation.hasErrors()) {
+        this.set('errors', validation.errors());
         return;
       }
-      var address = this.get('address');
-      var phone_number = this.get('phone_number');
-      var email = this.get('email');
 
       // create the new record
-      var contact = this.store.createRecord('contact', {
-        first_name: first_name,
-        surname: surname,
-        address: address,
-        phone_number: phone_number,
-        email: email
-      });
+      var contact = this.store.createRecord('contact', validation.attributes());
 
-      // clear form
-      this.set('newContactFirstName', '');
-      this.set('newContactSurname', '');
+      // reset the controller
+      this.send('reset');
 
       // save the new record
       contact.save();
+
+      // redirect to the show page
+      this.transitionToRoute('contact', contact.id);
     },
 
     cancelContactForm: function() {
       this.transitionToRoute('contacts.index');
+    },
+
+    reset: function() {
+      this.set('errors', {});
+      this.set('first_name', '');
+      this.set('surname', '');
+      this.set('address', '');
+      this.set('email', '');
+      this.set('phone_number', '');
     }
   }
 });
@@ -103,6 +157,7 @@ ActiveAddress.ContactsNewController = Ember.ArrayController.extend({
 ActiveAddress.ContactController = Ember.ObjectController.extend({
   isEditing: false,
   contactFormButtonText: 'Done',
+  errors: {},
 
   actions: {
     edit: function() {
@@ -110,13 +165,33 @@ ActiveAddress.ContactController = Ember.ObjectController.extend({
     },
 
     submitContactForm: function() {
+      var model = this.get('model');
+
+      var validation = validateContact(model);
+      if (validation.hasErrors()) {
+        this.set('errors', validation.errors());
+        return;
+      }
+
       this.set('isEditing', false);
-      this.get('model').save();
+      model.save();
+    },
+
+    delete: function() {
+      this.get('model').deleteRecord();
+      this.transitionToRoute('contacts');
     },
 
     cancelContactForm: function() {
       this.set('isEditing', false);
       this.get('model').rollback();
+    },
+
+    reset: function() {
+      if (this.get('isEditing')) {
+        this.get('model').rollback();
+      }
+      this.set('errors', {});
     }
   }
 });
