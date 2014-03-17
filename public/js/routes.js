@@ -1,7 +1,7 @@
 ActiveAddress.Router.map(function() {
   this.resource('contacts', { path: '/' }, function() {
     this.route('new');
-    this.resource('contact', { path: '/contact/:id' });
+    this.resource('contact', { path: '/contacts/:id' });
   });
 });
 
@@ -19,7 +19,6 @@ ActiveAddress.ContactsRoute = Ember.Route.extend({
 
 ActiveAddress.ContactRoute = Ember.Route.extend({
   model: function(params) {
-    var router = this;
     return this.store.find('contact', params.id).catch(function(e) {
       console.log(e);
       router.transitionTo('contacts.new');

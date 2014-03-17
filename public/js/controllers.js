@@ -24,10 +24,11 @@ ActiveAddress.ContactsNewController = Ember.ArrayController.extend({
       this.send('reset');
 
       // save the new record
-      contact.save();
-
-      // redirect to the show page
-      this.transitionToRoute('contact', contact.id);
+      var controller = this;
+      contact.save().then(function(record) {
+        // redirect to the show page
+        controller.transitionToRoute('contact', record.id);
+      });
     },
 
     cancelContactForm: function() {
@@ -71,8 +72,10 @@ ActiveAddress.ContactController = Ember.ObjectController.extend({
     delete: function() {
       var record = this.get('model');
       if (confirm('Do you really want to remove ' + record.get('display_name') + ' from the contacts list?')) {
-        record.deleteRecord();
-        this.transitionToRoute('contacts');
+        var controller = this;
+        record.destroyRecord().then(function() {
+          controller.transitionToRoute('contacts');
+        });
       }
     },
 
