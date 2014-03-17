@@ -19,9 +19,10 @@ ActiveAddress.ContactsRoute = Ember.Route.extend({
 
 ActiveAddress.ContactRoute = Ember.Route.extend({
   model: function(params) {
+    var router = this;
     return this.store.find('contact', params.id).catch(function(e) {
-      console.log(e);
-      router.transitionTo('contacts.new');
+      router.transitionTo('contacts');
+      return null;
     });
   },
 
